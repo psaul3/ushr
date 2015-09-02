@@ -33,41 +33,41 @@
                     <button class="button icon-right ion-edit button-small button-outline button-positive" ng-click="edit()">Edit &#xA0;</button>
                 </ion-header-bar>
                 <ion-content>
-                    <div class="row" ng-show="editMode">
-                        <div class="col col-offset-80 col-20">
+                    <div class="row">
+                        <div class="col col-25">
                             <div class="button-bar">
-                                <a class="button button-small" ng-click="saveLocal()">Save</a>
-                                <a class="button button-small" ng-click="clearGrouped()">Clear</a>
-                                <a class="button button-small button-assertive" ng-click="resetSeats()">Reset</a>
+                                <a class="button" ng-click="saveLocal()">Save</a>
+                                <a class="button" ng-click="clearGrouped()">Clear</a>
+                                <a class="button button-assertive" ng-click="resetSeats()">Reset</a>
                             </div>
                         </div>
-                    </div>
-                    <div class="row padding">
-                        <label class="item item-input item-select col-20" ng-show="editMode">
-                            <div class="input-label">How many Sections?</div>
-                            <select ng-model="sections" ng-change="sectionsChange(sections)" ng-options="n for n in [] | range:1:5"></select>
-                        </label>
-                        <div class="col col-offset-25 col-50" ng-hide="editMode">
+                        <div class="col col-offset-10" ng-hide="editMode">
                             <div class="row">
                                 <pre class="col padding-top">Seats: {{ushr.layoutTotals.Seats}}</pre>
                                 <pre class="col padding-top">Available: {{ushr.layoutTotals.Available}}</pre>
                                 <pre class="col padding-top">Occupied: {{ushr.layoutTotals.Occupied}}</pre>
                                 <pre class="col padding-top">Rows: {{ushr.layoutTotals.Rows}}</pre>
-                                <button class="button icon ion-person-add" ng-click="toggleRight()"></button>
+                                <!--<button class="button icon ion-person-add" ng-click="toggleRight()"></button>-->
                             </div>
                         </div>
+                    </div>
+                    <div class="row padding">
+                        <label class="item item-input item-select col-33" ng-show="editMode">
+                            <div class="input-label">How many Sections?</div>
+                            <select ng-model="sections" ng-change="sectionsChange(sections)" ng-options="n for n in [] | range:1:5"></select>
+                        </label> 
                     </div>
                     <!-- Edit Mode -->
                     <div class="row" ng-show="editMode" layout="row" layout-align="center start">
                         <section ng-if="ushr.layoutConfig.length &gt; 0" ng-repeat="section in ushr.layoutConfig" ng-class="{ &apos;section-selected&apos;: section.selected }" on-swipe-down="sectionSelect(section)" on-swipe-right="setOrientation(&apos;diagonalUpRight&apos;)" on-swipe-left="setOrientation(&apos;diagonalUpLeft&apos;)" on-swipe-up="setOrientation(&apos;horizontal&apos;)" class="col" layout="column" layout-align="center {{($first ? &apos;end&apos; : ($last ? &apos;start&apos; : &apos;center&apos;))}}">
                             <div class="row" layout="row" layout-align="start center" flex="" layout-padding="" layout-margin="">
-                                <div class="col col-offset-25 col-25" on-swipe-right="copyRows(section.rowCount)">
+                                <div class="col" on-swipe-right="copyRows(section.rowCount)">
                                     <label class="item item-input item-select">
                                         <div class="input-label">Rows</div>
                                         <select ng-model="section.rowCount" ng-change="setRowCount(section)" ng-options="n for n in [] | range:1:15"></select>
                                     </label>
                                 </div>
-                                <div class="col col-25" on-swipe-left="copySeats(section.seatsPerRow)">
+                                <div class="col" on-swipe-left="copySeats(section.seatsPerRow)">
                                     <label class="item item-input item-select">
                                         <div class="input-label">Seats</div>
                                         <select ng-model="section.seatsPerRow" ng-change="setSeatCount(section)" ng-options="n for n in [] | range:1:15"></select>
