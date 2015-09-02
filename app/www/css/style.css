@@ -1,0 +1,51 @@
+/* Empty. Add your own CSS if you like */
+.chair, .chair_closed, .chair_open, .chair_reserved{
+	background: url(../img/sprites.png) no-repeat;
+    width: 40px;
+    height: 40px;
+}
+
+.chair_reserved{
+	background-position: 0 0;
+}
+
+.chair_closed{
+	background-position: -36px 0;
+}
+
+.chair_open{
+	background-position: -72px 0;
+    
+}
+
+.chair.grouped {
+    background-color: yellow;
+}
+
+.section-selected {
+    background-color:antiquewhite;
+}
+
+div.row.diagonalUpRight {
+    -moz-transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
+    -o-transform: rotate(20deg);
+    -ms-transform: rotate(20deg);
+    transform: rotate(20deg);
+    transform-origin: left center;
+}
+
+div.row.diagonalUpLeft {
+    -moz-transform: rotate(-20deg);
+    -webkit-transform: rotate(-20deg);
+    -o-transform: rotate(-20deg);
+    -ms-transform: rotate(-20deg);
+    transform: rotate(-20deg);
+    transform-origin: right center;
+}
+
+section.horizontal {
+    margin-top: 40px;
+    margin-left: 18px;
+    margin-right: 18px;
+}
