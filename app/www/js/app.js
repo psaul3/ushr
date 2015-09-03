@@ -134,13 +134,7 @@
             }
             
             updateTotals();
-        };
-        
-        ushr.getNumber = function (num) {
-            var i, x = [];
-            for (i = 1; i <= num; i += 1) { x.push(i); }
-            return x;
-        };
+        }
         
         if (lsLayoutConfig) { ushr.layoutConfig = lsLayoutConfig; } else { ushr.layoutConfig = []; }
         if (lsLayoutTotals) {
@@ -261,6 +255,7 @@
                     });
                 }
             }
+            updateTotals();
         };
         
         $scope.toggleSeat = function (seat) {

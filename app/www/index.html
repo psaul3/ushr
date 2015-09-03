@@ -29,18 +29,14 @@
         <ion-side-menus>
             <ion-side-menu-content>
                 <ion-header-bar class="bar-stable">
+                    <a class="button button-outline button-small" ng-click="saveLocal()">Save</a>
+                    <a class="button button-outline button-small" ng-click="clearGrouped()">Clear</a>
+                    <a class="button button-outline button-small button-assertive" ng-click="resetSeats()">Reset</a>
                     <h1 class="title">Ushr</h1>
                     <button class="button icon-right ion-edit button-small button-outline button-positive" ng-click="edit()">Edit &#xA0;</button>
                 </ion-header-bar>
                 <ion-content>
                     <div class="row">
-                        <div class="col col-25">
-                            <div class="button-bar">
-                                <a class="button" ng-click="saveLocal()">Save</a>
-                                <a class="button" ng-click="clearGrouped()">Clear</a>
-                                <a class="button button-assertive" ng-click="resetSeats()">Reset</a>
-                            </div>
-                        </div>
                         <div class="col col-offset-10" ng-hide="editMode">
                             <div class="row">
                                 <pre class="col padding-top">Seats: {{ushr.layoutTotals.Seats}}</pre>
@@ -58,7 +54,7 @@
                         </label> 
                     </div>
                     <!-- Edit Mode -->
-                    <div class="row" ng-show="editMode" layout="row" layout-align="center start">
+                    <div scroll="false" class="row" ng-show="editMode" layout="row" layout-align="center start">
                         <section ng-if="ushr.layoutConfig.length &gt; 0" ng-repeat="section in ushr.layoutConfig" ng-class="{ &apos;section-selected&apos;: section.selected }" on-swipe-down="sectionSelect(section)" on-swipe-right="setOrientation(&apos;diagonalUpRight&apos;)" on-swipe-left="setOrientation(&apos;diagonalUpLeft&apos;)" on-swipe-up="setOrientation(&apos;horizontal&apos;)" class="col" layout="column" layout-align="center {{($first ? &apos;end&apos; : ($last ? &apos;start&apos; : &apos;center&apos;))}}">
                             <div class="row" layout="row" layout-align="start center" flex="" layout-padding="" layout-margin="">
                                 <div class="col" on-swipe-right="copyRows(section.rowCount)">
@@ -88,7 +84,7 @@
                             <div class="col" layout="column" layout-align="center {{($first ? &apos;end&apos; : ($last ? &apos;start&apos; : &apos;center&apos;))}}">
                                 <div style="width: {{36*section.seatsPerRow}}px;" layout-margin="">
                                     <div ng-if="section.rows.length &gt; 0" ng-repeat="row in section.rows" class="row {{section.orientation}}" on-swipe-right="rowClosed(row)">
-                                        <div ng-if="row.seats.length &gt; 0" class="col chair" ng-repeat="seat in row.seats" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}">
+                                        <div ng-if="row.seats.length &gt; 0" class="col chair" ng-repeat="seat in row.seats" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}" on-tap="toggleSeat(seat)">
                                         </div>
                                     </div>
                                 </div>
