@@ -11,7 +11,7 @@
     // angular.module is a global place for creating, registering and retrieving Angular modules
     // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
     // the 2nd parameter is an array of 'requires'
-    var app = angular.module('app', ['ionic']);
+    var app = angular.module('app', ['ionic', 'ngAria' ,'ngMaterial']);
 
     app.filter('range', function () {
         var i;
@@ -42,7 +42,7 @@
         };
     }]);
 
-    app.controller('ushrController', [ '$http', '$scope', '$filter', '$timeout', '$log', '$ionicSideMenuDelegate', '$localstorage', function ($http, $scope, $filter, $timeout, $log, $ionicSideMenuDelegate, $localstorage) {
+    app.controller('ushrController', [ '$http', '$scope', '$filter', '$mdToast', '$timeout', '$log', '$ionicSideMenuDelegate', '$localstorage', function ($http, $scope, $filter, $mdToast, $timeout, $log, $ionicSideMenuDelegate, $localstorage) {
         var ushr = this,
             lsLayoutConfig = $localstorage.getObject('layoutConfig'),
             lsLayoutTotals = $localstorage.getObject('layoutTotals');
@@ -52,7 +52,8 @@
             Available: 0,
             Occupied: 0,
             Rows: 0,
-            MaxSeats: 0
+            MaxSeats: 0,
+            WarningNbr: 0.15
         };
         
         $scope.maxSeats = [];
@@ -134,7 +135,7 @@
             }
             
             updateTotals();
-        }
+        };
         
         if (lsLayoutConfig) { ushr.layoutConfig = lsLayoutConfig; } else { ushr.layoutConfig = []; }
         if (lsLayoutTotals) {
@@ -145,7 +146,8 @@
                 Available: 0,
                 Occupied: 0,
                 Rows: 0,
-                MaxSeats: 0
+                MaxSeats: 0,
+                WarningNbr: 0.15
             };
         }
         
@@ -169,11 +171,15 @@
             });
         };
         
-        $scope.$watch('ushr.sectionsSelected', function (newVal, oldVal) {
-            if (ushr.sectionsSelected.length > 0) {
-                ushr.sectionsSelected.forEach(function (sec) {
-                    console.log('Section: ' + sec.name + ' is ' + (sec.selected ? 'selected.' : 'not selected.'));
-                });
+        $scope.openWarning = function ($event) {
+            $mdToast.show($mdToast.simple().content('Seat availability is low.'));
+        };
+        
+        $scope.$watch('ushr.layoutTotals.Available', function (newVal, oldVal) {
+            var availPct = ushr.layoutTotals.Available / ushr.layoutTotals.Seats;
+            
+            if (availPct < 0.2) {
+                $scope.openWarning();
             }
         });
         
