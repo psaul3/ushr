@@ -49,3 +49,7 @@ section.horizontal {
     margin-left: 18px;
     margin-right: 18px;
 }
+
+.card .item.item-text-wrap h2{
+    text-align: center;
+}

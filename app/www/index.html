@@ -30,20 +30,47 @@
         <ion-side-menus>
             <ion-side-menu-content>
                 <ion-header-bar class="bar-stable">
-                    <a class="button button-outline button-small" ng-click="saveLocal()">Save</a>
-                    <a class="button button-outline button-small button-assertive" ng-click="resetSeats()">Reset</a>
+                    <a class="button button-outline button-small" on-tap="saveLocal()">Save</a>
+                    <a class="button button-outline button-small button-assertive" on-tap="resetSeats()">Reset</a>
                     <h1 class="title">Ushr</h1>
-                    <button class="button icon-right ion-edit button-small button-outline button-positive" ng-click="edit()">Edit &#xA0;</button>
+                    <button class="button icon-right ion-edit button-small button-outline button-positive" on-tap="edit()">Edit &#xA0;</button>
                 </ion-header-bar>
                 <ion-content>
                     <div class="row">
-                        <div class="col col-offset-10" ng-hide="editMode">
-                            <div class="row">
-                                <pre class="col padding-top">Seats: {{ushr.layoutTotals.Seats}}</pre>
-                                <pre class="col padding-top">Available: {{ushr.layoutTotals.Available}}</pre>
-                                <pre class="col padding-top">Occupied: {{ushr.layoutTotals.Occupied}}</pre>
-                                <pre class="col padding-top">Rows: {{ushr.layoutTotals.Rows}}</pre>
-                                <!--<button class="button icon ion-person-add" ng-click="toggleRight()"></button>-->
+                        <div class="col col-offset-25 col-50" ng-hide="editMode">
+                            <div class="row" layout="row" layout-align="space-around center">
+                                <div class="card">
+                                    <div class="item item-text-wrap">
+                                        <h2>{{ushr.layoutTotals.Seats}}</h2>
+                                    </div>
+                                    <div class="item item-divider">
+                                        <h5>Seats</h5>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="item item-text-wrap">
+                                        <h2>{{ushr.layoutTotals.Available}}</h2>
+                                    </div>
+                                    <div class="item item-divider">
+                                        <h5>Available</h5>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="item item-text-wrap">
+                                        <h2>{{ushr.layoutTotals.Occupied}}</h2>
+                                    </div>
+                                    <div class="item item-divider">
+                                        <h5>Occupied</h5>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="item item-text-wrap">
+                                        <h2>{{ushr.layoutTotals.Rows}}</h2>
+                                    </div>
+                                    <div class="item item-divider">
+                                        <h5>Rows</h5>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,13 +111,13 @@
                             <div class="col" layout="column" layout-align="center {{($first ? &apos;end&apos; : ($last ? &apos;start&apos; : &apos;center&apos;))}}">
                                 <div style="width: {{36*section.seatsPerRow}}px;" layout-margin="">
                                     <div ng-if="section.rows.length &gt; 0" ng-repeat="row in section.rows" class="row {{section.orientation}}" on-swipe-right="rowClosed(row)">
-                                        <div ng-if="row.seats.length &gt; 0" class="col chair" ng-repeat="seat in row.seats" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}" ng-click="toggleSeat(seat)">
+                                        <div ng-if="row.seats.length &gt; 0" class="col chair" ng-repeat="seat in row.seats" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}" on-tap="toggleSeat(seat)">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div layout="row" layout-align="center center" layout-margin="" layout-padding="" flex="">
-                                <button class="button button-positive icon ion-plus-circled" ng-click="addRow(section)"></button>
+                                <button class="button button-positive icon ion-plus-circled" on-tap="addRow(section)"></button>
                             </div>
                         </section>
                     </div>
@@ -100,10 +127,10 @@
                 <!-- Toggle right side menu -->
                 <!--<button menu-toggle="right" class="button button-icon icon ion-navicon"></button>-->
                 <div layout="column" layout-align="center center" layout-padding="">
-                    <button class="button button-block button-positive" layout="column" layout-align="center center" ng-repeat="n in getNumber(ushr.layoutTotals.MaxSeats)" ng-click="findSeats(n)">
+                    <button class="button button-block button-positive" layout="column" layout-align="center center" ng-repeat="n in getNumber(ushr.layoutTotals.MaxSeats)" on-tap="findSeats(n)">
                         {{n}}
                     </button>
-                    <a class="button button-outline button-small" ng-click="clearGrouped()">Clear</a>
+                    <a class="button button-block button-outline" on-tap="clearGrouped()">Clear</a>
             </div></ion-side-menu>
         </ion-side-menus>
     </ion-pane>
