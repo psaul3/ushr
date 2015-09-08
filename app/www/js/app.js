@@ -6,6 +6,7 @@
     /*global console*/
     /*global StatusBar*/
     /*jshint -W009 */
+    /*global $ionicScrollDelegate*/
     // Ionic Starter App
 
     // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -74,13 +75,26 @@
             ushr.layoutTotals.MaxSeats = 0;
             
             ushr.layoutConfig.forEach(function (section) {
+                section.seatCount = 0;
+                section.available = 0;
+                section.occupied = 0;
                 if (section.rowCount > ushr.layoutTotals.Rows) { ushr.layoutTotals.Rows = section.rowCount; }
-                if (section.seatsPerRow > ushr.layoutTotals.MaxSeats) { ushr.layoutTotals.MaxSeats = section.seatsPerRow; }
+                if (Math.round(section.seatCount / section.rowCount, 0) > ushr.layoutTotals.MaxSeats) {
+                    ushr.layoutTotals.MaxSeats = Math.round(section.seatCount / section.rowCount, 0);
+                }
 
                 section.rows.forEach(function (row) {
                     row.seats.forEach(function (seat) {
                         ushr.layoutTotals.Seats += 1;
-                        if (seat.open) { ushr.layoutTotals.Available += 1; } else { ushr.layoutTotals.Occupied += 1; }
+                        section.seatCount += 1;
+                        if (seat.open) {
+                            ushr.layoutTotals.Available += 1;
+                            section.available += 1;
+                        } else {
+                            ushr.layoutTotals.Occupied += 1;
+                            section.occupied += 1;
+                        }
+                        
                     });
                 });
             });
@@ -104,36 +118,105 @@
         };
         
         $scope.sectionsChange = function (val) {
+            var name = "";
             // Empty the configuration
             ushr.layoutConfig = [];
             ushr.sectionsSelected = [];
-            
+
             while (val > ushr.layoutConfig.length) {
+                
+                switch (val) {
+                case 2:
+                    switch (ushr.layoutConfig.length) {
+                    case 0:
+                        name = "Left";
+                        break;
+                    case 1:
+                        name = "Right";
+                        break;
+                    }
+                    break;
+                case 3:
+                    switch (ushr.layoutConfig.length) {
+                    case 0:
+                        name = "Left";
+                        break;
+                    case 2:
+                        name = "Right";
+                        break;
+                    default:
+                        name = "Middle";
+                        break;
+                    }
+                    break;
+                case 4:
+                    switch (ushr.layoutConfig.length) {
+                    case 0:
+                        name = "Left";
+                        break;
+                    case 1:
+                        name = "Left Middle";
+                        break;
+                    case 2:
+                        name = "Right Middle";
+                        break;
+                    case 3:
+                        name = "Right";
+                        break;
+                    default:
+                        name = "Middle";
+                        break;
+                    }
+                    break;
+                case 5:
+                    switch (ushr.layoutConfig.length) {
+                    case 0:
+                        name = "Left";
+                        break;
+                    case 1:
+                        name = "Left Middle";
+                        break;
+                    case 3:
+                        name = "Right Middle";
+                        break;
+                    case 4:
+                        name = "Right";
+                        break;
+                    default:
+                        name = "Middle";
+                        break;
+                    }
+                    break;
+                default:
+                    name = "Middle";
+                    break;
+                }
+                
                 if (ushr.layoutConfig.length === 0) {
                     ushr.layoutConfig.push({
                         id: 0,
-                        name: 'section0',
+                        name: (val === 1 ? 'Middle' : 'Left'),
                         rowCount: 0,
-                        seatsPerRow: 0,
+                        seatCount: 0,
+                        available: 0,
+                        occupied: 0,
                         rows: [],
-                        open: true,
-                        selected: false,
-                        orientation: 'horizontal'
+                        open: true
                     });
                 } else {
                     ushr.layoutConfig.push({
                         id: ushr.layoutConfig.length,
-                        name: 'section' + ushr.layoutConfig.length,
+                        name: name,
                         rowCount: 0,
-                        seatsPerRow: 0,
+                        seatCount: 0,
+                        available: 0,
+                        occupied: 0,
                         rows: [],
-                        open: true,
-                        selected: false,
-                        orientation: 'horizontal'
+                        open: true
                     });
                 }
             }
-            
+
             updateTotals();
         };
         
@@ -183,12 +266,6 @@
             }
         });
         
-        $scope.setOrientation = function (orientation) {
-            ushr.layoutConfig.forEach(function (section) {
-                if (section.selected) { section.orientation = orientation; }
-            });
-        };
-        
         $scope.setRowCount = function (section) {
             var i = 0;
             section.rows = [];
@@ -205,18 +282,18 @@
                     reserved: false
                 });
             }
-            if (section.seatsPerRow > 0) { $scope.setSeatCount(section); }
+            if (section.seatCount > 0) { $scope.setSeatCount(section, Math.round(section.seatCount / section.rowCount, 0)); }
             
             updateTotals();
         };
         
-        $scope.setSeatCount = function (section) {
+        $scope.setSeatCount = function (section, seatsPerRow) {
             var i = 0;
             
             section.rows.forEach(function (row) {
                 row.seats = [];
 
-                for (i = 0; i < section.seatsPerRow; i += 1) {
+                for (i = 0; i < seatsPerRow; i += 1) {
                     row.seats.push({
                         seatId: i,
                         open: true,
@@ -237,8 +314,8 @@
         
         $scope.copySeats = function (seats) {
             ushr.layoutConfig.forEach(function (section) {
-                section.seatsPerRow = seats;
-                $scope.setSeatCount(section);
+                section.seatCount = seats;
+                $scope.setSeatCount(section, seats);
             });
         };
         
@@ -251,8 +328,8 @@
                 open: true,
                 reserved: false
             });
-            if (section.seatsPerRow > 0) {
-                for (i = 0; i < section.seatsPerRow; i += 1) {
+            if (section.seatCount > 0) {
+                for (i = 0; i < section.rows[rowId - 1].seats.length; i += 1) {
                     section.rows[rowId].seats.push({
                         seatId: i,
                         open: true,
@@ -261,6 +338,21 @@
                     });
                 }
             }
+            updateTotals();
+        };
+        
+        $scope.addSeat = function (row) {
+            row.seats.push({
+                seatId: row.seats.length,
+                open: true,
+                reserved: false,
+                grouped: false
+            });
+            updateTotals();
+        };
+        
+        $scope.remSeat = function (row) {
+            row.seats.pop();
             updateTotals();
         };
         

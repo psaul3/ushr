@@ -74,52 +74,79 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Edit Mode -->
                     <div class="row padding">
                         <label class="item item-input item-select col-33" ng-show="editMode">
                             <div class="input-label">How many Sections?</div>
                             <select ng-model="sections" ng-change="sectionsChange(sections)" ng-options="n for n in [] | range:1:5"></select>
                         </label> 
                     </div>
-                    <!-- Edit Mode -->
-                    <div scroll="false" class="row" ng-show="editMode" layout="row" layout-align="center start">
-                        <section ng-if="ushr.layoutConfig.length &gt; 0" ng-repeat="section in ushr.layoutConfig" ng-class="{ &apos;section-selected&apos;: section.selected }" on-swipe-down="sectionSelect(section)" on-swipe-right="setOrientation(&apos;diagonalUpRight&apos;)" on-swipe-left="setOrientation(&apos;diagonalUpLeft&apos;)" on-swipe-up="setOrientation(&apos;horizontal&apos;)" class="col" layout="column" layout-align="center {{($first ? &apos;end&apos; : ($last ? &apos;start&apos; : &apos;center&apos;))}}">
-                            <div class="row" layout="row" layout-align="start center" flex="" layout-padding="" layout-margin="">
-                                <div class="col" on-swipe-right="copyRows(section.rowCount)">
-                                    <label class="item item-input item-select">
-                                        <div class="input-label">Rows</div>
-                                        <select ng-model="section.rowCount" ng-change="setRowCount(section)" ng-options="n for n in [] | range:1:15"></select>
-                                    </label>
-                                </div>
-                                <div class="col" on-swipe-left="copySeats(section.seatsPerRow)">
-                                    <label class="item item-input item-select">
-                                        <div class="input-label">Seats</div>
-                                        <select ng-model="section.seatsPerRow" ng-change="setSeatCount(section)" ng-options="n for n in [] | range:1:15"></select>
-                                    </label>
-                                </div>
-                            </div>
-                            <div style="width: {{36*section.seatsPerRow}}px;" layout-margin="">
-                                <div ng-if="section.rows.length &gt; 0" ng-repeat="row in section.rows" class="row {{section.orientation}}">
-                                    <div ng-if="row.seats.length &gt; 0" class="col chair" ng-repeat="seat in row.seats" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}">
+                    <div scroll="false" class="row" ng-show="editMode" layout="row" layout-align="center start" flex="">
+                        <md-content class="md-padding" flex="">
+                            <md-tabs md-selected="0" md-dynamic-height="" md-border-bottom="" flex="">
+                                <md-tab ng-repeat="section in ushr.layoutConfig" label="{{section.name}}" layout="" layout-align="center center">
+                                    <div class="row" layout="row" layout-align="space-around center" flex="" layout-padding="" layout-margin="">
+                                        <div class="col" on-swipe-right="copyRows(section.rowCount)" flex="45">
+                                            <label class="item item-input item-select">
+                                                <div class="input-label">Rows</div>
+                                                <select ng-model="section.rowCount" ng-change="setRowCount(section)" ng-options="n for n in [] | range:1:15"></select>
+                                            </label>
+                                        </div>
+                                        <div class="col" on-swipe-left="copySeats(seatsPerRow)" flex="45">
+                                            <label class="item item-input item-select">
+                                                <div class="input-label">Seats</div>
+                                                <select ng-model="seatsPerRow" ng-change="setSeatCount(section, seatsPerRow)" ng-options="n for n in [] | range:1:15"></select>
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </section>
+                                    <md-content>
+                                        <div ng-if="section.rows.length &gt; 0" ng-repeat="row in section.rows" class="row" layout-padding="" layout-margin="">
+                                            <button class="button icon ion-minus-round button-positive button-outline" on-tap="remSeat(row)"></button>
+                                            <span flex="">{{row.rowId + 1}}</span>
+                                            <div ng-if="row.seats.length &gt; 0" class="chair chair_open" ng-repeat="seat in row.seats track by $index"></div>
+                                            <span flex=""></span>
+                                            <button class="button icon ion-plus-round button-positive button-outline" on-tap="addSeat(row)"></button>
+                                        </div>
+                                    </md-content>
+                                </md-tab>
+                            </md-tabs>
+                        </md-content>
                     </div>
                     <!-- Main Screen -->
                     <div class="row" ng-hide="editMode">
-                        <section ng-if="ushr.layoutConfig.length &gt; 0" ng-repeat="section in ushr.layoutConfig" ng-class="{ &apos;section-selected&apos;: section.selected }" class="col {{section.orientation}}">
-                            <div class="col" layout="column" layout-align="center {{($first ? &apos;end&apos; : ($last ? &apos;start&apos; : &apos;center&apos;))}}">
-                                <div style="width: {{36*section.seatsPerRow}}px;" layout-margin="">
-                                    <div ng-if="section.rows.length &gt; 0" ng-repeat="row in section.rows" class="row {{section.orientation}}" on-swipe-right="rowClosed(row)">
-                                        <div ng-if="row.seats.length &gt; 0" class="col chair" ng-repeat="seat in row.seats" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}" on-tap="toggleSeat(seat)">
+                        <md-content class="md-padding" flex="">
+                            <md-tabs md-selected="0" md-dynamic-height="" md-border-bottom="" flex="">
+                                <md-tab ng-repeat="section in ushr.layoutConfig" label="{{section.name}}" layout="" layout-align="center center">
+                                    <md-toolbar class="md-medium-tall" layout="" layout-align="center center" layout-padding="">
+                                        <div class="md-toolbar-tools" layout="row" layout-align="center center" layout-padding="" layout-margin="">
+                                            <div layout="column" layout-align="center center" layout-padding="" layout-margin="">
+                                                <h2>{{section.seatCount}}</h2>
+                                                <h5>Seats</h5>
+                                            </div>
+                                            <div layout="column" layout-align="center center" layout-padding="" layout-margin="">
+                                                <h2>{{section.available}}</h2>
+                                                <h5>Available</h5>
+                                            </div>
+                                            <div layout="column" layout-align="center center" layout-padding="" layout-margin="">
+                                                <h2>{{section.occupied}}</h2>
+                                                <h5>Occupied</h5>
+                                            </div>
+                                            <div layout="column" layout-align="center center" layout-padding="" layout-margin="">
+                                                <h2>{{section.rowCount}}</h2>
+                                                <h5>Rows</h5>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div layout="row" layout-align="center center" layout-margin="" layout-padding="" flex="">
-                                <button class="button button-positive icon ion-plus-circled" on-tap="addRow(section)"></button>
-                            </div>
-                        </section>
+                                    </md-toolbar>
+                                    <md-content>
+                                        <div ng-if="section.rows.length &gt; 0" ng-repeat="row in section.rows" class="row" layout-padding="" layout-margin="" on-swipe-right="rowClosed(row)">
+                                            <span flex="">{{row.rowId + 1}}</span>
+                                            <div ng-if="row.seats.length &gt; 0" class="chair" ng-repeat="seat in row.seats track by $index" on-tap="toggleSeat(seat)" ng-class="{&apos;chair_open&apos;: seat.open, &apos;chair_closed&apos;: !seat.open, &apos;chair_reserved&apos;: seat.reserved, &apos;grouped&apos;: seat.grouped}"></div>
+                                            <span flex=""></span>
+                                        </div>
+                                    </md-content>
+                                </md-tab>    
+                            </md-tabs>
+                        </md-content>
                     </div>
                 </ion-content>
             </ion-side-menu-content>
