@@ -17,10 +17,6 @@
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="js/angular-aria.min.js"></script>
     <script src="js/angular-material.min.js"></script>
-    <script src="js/angular-cookies.min.js"></script>
-    
-    <!-- Backand SDK for Angular -->
-    <script src="//cdn.backand.net/backand/dist/1.7.2/backand.min.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -78,11 +74,13 @@
                         </div>
                     </div>
                     <!-- Edit Mode -->
-                    <div class="row padding">
-                        <label class="item item-input item-select col-33" ng-show="editMode">
-                            <div class="input-label">How many Sections?</div>
-                            <select ng-model="sections" ng-change="sectionsChange(sections)" ng-options="n for n in [] | range:1:5"></select>
-                        </label> 
+                    <div class="row padding col-50" layout="row" layout-align="space-between center" ng-show="editMode &amp;&amp; sectionChoice">
+                            <h4 flex="">How many Sections?</h4>
+                            <div layout="row" layout-align="space-around center" flex="">
+                                <button class="button button-positive" layout-margin="" ng-repeat="n in getNumber(5)" on-tap="sectionsChange({{n}}); hideSectionChoice()">
+                                    {{n}}
+                                </button>
+                            </div>
                     </div>
                     <div scroll="false" class="row" ng-show="editMode" layout="row" layout-align="center start" flex="">
                         <md-content class="md-padding" flex="">
@@ -111,6 +109,10 @@
                                             <button class="button icon ion-plus-round button-positive button-outline" on-tap="addSeat(row)"></button>
                                         </div>
                                     </md-content>
+                                    <div layout="row" layout-align="center center">
+                                        <button class="button icon ion-minus-round button-positive button-outline" on-tap="removeRow(section)"></button>
+                                        <button class="button icon ion-plus-round button-positive button-outline" on-tap="addRow(section)"></button>
+                                    </div>
                                 </md-tab>
                             </md-tabs>
                         </md-content>
