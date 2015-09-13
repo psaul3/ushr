@@ -1,0 +1,88 @@
+[
+  {
+    "name": "sections",
+    "fields": {
+      "number":{
+        "type": "float"
+      },
+      "name":{
+        "type": "string"
+      },
+      "rowcount":{
+        "type": "float"
+      },
+      "seatcount":{
+        "type": "float"
+      },
+      "available":{
+        "type": "float"
+      },
+      "occupied":{
+        "type": "float"
+      },
+      "open":{
+        "type": "boolean"
+      },
+      "sessionID": {
+        "object": "layoutSessions"
+      },
+      "rows":{
+        "collection": "rows",
+        "via": "section"
+      }
+    }
+  },
+  {
+    "name": "rows",
+    "fields": {
+      "rowID":{
+        "type": "float"
+      },
+      "open":{
+        "type": "boolean"
+      },
+      "reserved":{
+        "type": "boolean"
+      },
+      "section":{
+        "object": "sections"
+      },
+      "seats":{
+        "collection": "seats",
+        "via": "row"
+      }
+    }
+  },
+  {
+    "name": "seats",
+    "fields": {
+      "seatID":{
+        "type": "float"
+      },
+       "open":{
+        "type": "boolean"
+      },
+      "reserved":{
+        "type": "boolean"
+      },
+      "grouped":{
+        "type": "boolean"
+      },
+      "row":{
+        "object": "rows"
+      }
+    }
+  },
+  {
+    "name": "layoutSessions",
+    "fields": {
+      "timestamp":{
+        "type": "datetime"
+      },
+        "sections":{
+          "collection": "sections",
+          "via": "sessionID"
+      }
+    }
+  }
+]

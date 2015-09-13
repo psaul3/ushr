@@ -3,16 +3,23 @@
     
     /*global angular*/
     /*global cordova*/
-    /*global console*/
     /*global StatusBar*/
     /*jshint -W009 */
-    /*global $ionicScrollDelegate*/
     // Ionic Starter App
 
     // angular.module is a global place for creating, registering and retrieving Angular modules
     // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
     // the 2nd parameter is an array of 'requires'
-    var app = angular.module('app', ['ionic', 'ngAria', 'ngMaterial']);
+    var app = angular.module('app', ['ionic', 'ngAria', 'ngMaterial', 'backand', 'ngCookies']);
+    
+    //Update Angular configuration section
+    app.config(function (BackandProvider) {
+      BackandProvider.manageDefaultHeaders();
+      BackandProvider.setAppName('ushr');
+      BackandProvider.setSignUpToken('0d761b45-1eda-43a3-a8ac-d58f30bde92d');
+      //BackandProvider.setAnonymousToken('58712932-c11a-4868-8a71-97f05456a2cb');
+    });
+
 
     app.filter('range', function () {
         var i;
@@ -259,7 +266,7 @@
         };
         
         $scope.$watch('ushr.layoutTotals.Available', function (newVal, oldVal) {
-            var availPct = ushr.layoutTotals.Available / ushr.layoutTotals.Seats;
+            var availPct = newVal / ushr.layoutTotals.Seats;
             
             if (availPct < 0.2) {
                 $scope.openWarning();
